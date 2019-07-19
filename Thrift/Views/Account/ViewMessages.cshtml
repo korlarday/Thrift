@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Account.CustomerMessagesVM>
+
+@{
+    ViewBag.Title = "ViewMessages";
+}
+
+
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h3>Messages</h3>
+                    </div>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+                </div>
+
+
+                <div class="list-group col-md-4 ml-3" id="messages">
+                    @foreach (var item in Model)
+                    {
+                        <a href="#" data-url="@item.Slug" class="list-group-item list-group-item-action view_message">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    @item.Title 
+                                    @if (!item.Status)
+                                    {
+                                        <span class="badge badge-success ml-4">new</span>
+                                    }
+                                </h5>
+                                <small><span data-utcdate="@item.TimeSent.ToString("s", System.Globalization.CultureInfo.InvariantCulture)"></span></small>
+                            </div>
+                            <p class="mb-1">
+                                @item.Body.Substring(0, 20)...
+                            </p>
+                        
+                        </a>
+                    }
+                </div>
+                <div style="display:none" class="col-md-6 offset-md-1 message_content">
+                    <h4 style="text-align: center" id="message_head">Response to your withdrawal request</h4>
+                    <p id="replyMsg" style="text-align: center">
+                        Your Request was declined
+                    </p>
+                    <h3 style="text-align:center">Declined</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script src="~/Content/User/js/components/moment.js"></script>
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $('[data-utcdate]').each(function () {
+                var d = moment($(this).attr('data-utcdate'));
+                $(this).html(d.fromNow());
+            });
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            });
+
+            $("#messages").on("click", ".view_message", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $("#messages a").removeClass("active");
+                $this.addClass("active");
+                var slug = $this.attr("data-url");
+                var url = "/Account/ViewMessage/";
+                var $message = $(".message_content");
+                $message.fadeOut().hide();
+                $this.find("badge-success").remove();
+                
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: { slug: slug },
+                    success: function (data) {
+                        
+                        var $msgContent = $(".message_content");
+
+                        $msgContent.find("#message_head").text(data.Title);
+                        $text = data.Body;
+                        $msgContent.find("#replyMsg").text($text);
+
+                        if (data.RequestReply) {
+                            if (data.Approve) {
+                                $msgContent.find("h3").text("Accepted");
+                                $msgContent.find("h3").removeClass("red").addClass("green");
+                            } else {
+                                $msgContent.find("h3").text("Declined");
+                                $msgContent.find("h3").removeClass("green").addClass("red");
+                            }
+                        } else {
+                            $msgContent.find("h3").text("");
+                        }
+                        
+                        $message.show().hide().fadeIn("slow");
+                    }
+                })
+            })
+        });
+    </script>
+}

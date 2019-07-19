@@ -1,0 +1,31 @@
+﻿<div id="page-menu">
+
+    <div id="page-menu-wrap">
+
+        <div class="container clearfix">
+
+            <div class="menu-title">Kobo<span>Kobo</span></div>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a href="@Url.Action("Dashboard","Contributions")" @(ViewContext.RouteData.Values["action"].ToString().Equals("Dashboard") ? "class=myActive" : "")><div>My Dashboard</div></a>
+                    </li>
+                    <li><a href="/Contributions/withdraw-cash"><div>Withdraw Cash</div></a></li>
+                    <li><a href="/Contributions/new-contribution"><div>Start New Contributions</div></a></li>
+                    <li><a href="/Contributions/ongoing-contributions"><div>Ongoing Contributions</div></a></li>
+                    <li><a href="/Contributions/terminated-contributions"><div>Terminated Contributions</div></a></li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        @Html.Action("UsernamePartial", "Account", new { area = "" })
+                    }
+                </ul>
+            </nav>
+
+            <div id="page-submenu-trigger"><i class="icon-reorder"></i></div>
+
+        </div>
+
+    </div>
+
+</div>

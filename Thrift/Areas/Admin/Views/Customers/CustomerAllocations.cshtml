@@ -1,0 +1,118 @@
+﻿@model Thrift.Areas.Admin.Models.AllocationPageVM
+
+@{
+    ViewBag.Title = "CustomerAllocations";
+}
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Administrators Customer Allocations</h2>
+    </div>
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Administrators
+                    </h2>
+                </div>
+                <div class="body table-responsive">
+                    @if (Model.AdminAndCustomers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ADMINISTRATOR USERNAME</th>
+                                    <th>NUMBER OF CUSTOMERS ALLOCATED</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model.AdminAndCustomers)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Admin.Username</td>
+                                            <td>@item.Customers.Count()</td>
+                                            <td>
+                                                <a href="/Admin/Customers/view-allocations/@item.Admin.Username" class="btn bg-teal waves-effect">View</a>
+                                            </td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>No Administrator?</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Unallocated Customers
+                    </h2>
+                </div>
+                <div class="body table-responsive">
+                    @if (Model.UnAllocatedCustomers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>USERNAME</th>
+                                    <th>NAME</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model.UnAllocatedCustomers)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Username</td>
+                                            <td>@item.FirstName @item.LastName</td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>There are currently no allocated customers.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+</div>
+
+@section Scripts{
+
+<script>
+    $(function () {
+        
+    })
+</script>   
+}

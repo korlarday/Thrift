@@ -1,0 +1,87 @@
+﻿.myActive {
+    font-weight: bold !important;
+    color: black !important;
+}
+
+span.naira{
+    font-weight: bold;
+    text-decoration: line-through;
+}
+
+.request-form {
+    display: none;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 12px;
+}
+
+.notificationsMenu li {
+}
+
+span.required-red{
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
+}
+.process_style {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 15px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.textIn_form {
+    font-size: 1.1em;
+    margin-left: 10px;
+    color: #1ABC9C;
+}
+
+.theme_color {
+    color: #1ABC9C !important;
+}
+
+.divider {
+    margin: 15px 0 !important;
+}
+
+footer#footer{
+    margin-top: 100px;
+}
+
+.list-group-item.active {
+    background-color: #1ABC9C !important;
+    border: 1px solid #1ABC9C !important
+}
+
+.message_content {
+    border: 1px solid #ced4da;
+    padding: 20px;
+    border-radius: 5px;
+}
+.green {
+    color: #4CAF50;
+}
+.red {
+    color: #fb483a;
+}
+
+.customerSelect {
+    background-color: #CCFFCC !important;
+}
+
+/*center Profit*/
+.enterProfit .form-control{
+    text-align: center;
+    font-size: 1.2em;
+}
+.enterProfitContainer{
+    max-width: 300px !important;
+    margin: auto;
+}
+
+.enterProfitForm {
+    border: 1px solid #ced4da;
+    padding: 20px;
+    border-radius: 5px;
+}

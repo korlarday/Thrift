@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Contributions.WithdrawalRequestVM>
+
+@{
+    ViewBag.Title = "Requests";
+}
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Withdrawal Requests</h2>
+    </div>
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Cash Withdrawal Requests
+                    </h2>
+                </div>
+                <div class="body table-responsive">
+                    @if (Model.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>CUSTOMER USERNAME</th>
+                                    <th>REQUEST AMOUNT</th>
+                                    <th>TIME</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Customer.Username</td>
+                                            <td><span class="naira">N</span><span class="money">@item.Amount</span></td>
+                                            <td><span data-utcdate="@item.DateSent.ToString("s", System.Globalization.CultureInfo.InvariantCulture)"></span></td>
+                                            <td>
+                                                <a href="/Admin/Transactions/view-request/@item.Slug" class="btn bg-teal waves-effect">View</a>
+                                            </td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>No request available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+
+</div>
+
+@section Scripts{
+
+<script>
+    $(function () {
+        $('[data-utcdate]').each(function () {
+            var d = moment($(this).attr('data-utcdate'));
+            $(this).html(d.fromNow());
+        }); 
+
+        function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".money").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+    })
+</script>   
+}

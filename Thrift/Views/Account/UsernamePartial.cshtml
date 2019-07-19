@@ -1,0 +1,26 @@
+﻿@model Thrift.Models.ViewModel.Account.UserNavPartialVM
+
+<li>
+    <a href="#">
+        <div>
+            @Model.Username 
+            @if(Model.NewMessages > 0)
+            {
+                <span class="badge badge-light">@Model.NewMessages</span>
+            }
+        </div>
+    </a>
+    <ul>
+        <li><a href="/Account/view-profile"><div>View Profile</div></a></li>
+        <li>
+            <a href="/Account/view-messages">
+                Messages
+                @if (Model.NewMessages > 0)
+                {
+                    <span class="badge badge-light">@Model.NewMessages</span>
+                }
+            </a>
+        </li>
+        <li><a href="/Account/Logout"><div>Logout</div></a></li>
+    </ul>
+</li>

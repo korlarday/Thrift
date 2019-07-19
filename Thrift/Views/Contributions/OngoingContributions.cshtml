@@ -1,0 +1,292 @@
+﻿@model Thrift.Models.ViewModel.Contributions.OngoingContributionVM
+
+@{
+    ViewBag.Title = "Ongoing Contributions";
+}
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+<!-- Content
+============================================= -->
+<!-- Confirmation modal-->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation Dialog</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to stop the ongoing contributions?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                @if(Model.InitiatedContributionVM != null)
+                {
+                    <button type="button" id="cancelContribution" data-conId="@Model.InitiatedContributionVM.Id" class="btn btn-danger">Yes</button>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h2>Ongoing Contributions</h2>
+                    </div>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+                    <div class="row">
+                        @if (Model.InitiatedContributionVM == null)
+                        {
+                            <h5 class="ml-3">No ongoing contributions.</h5>
+                        }
+                        else
+                        {
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 20rem;">
+                                    <div class="card-header">Current Contribution Balance</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">Your Total Account Balance is <span class="naira">N</span><span class="moneyValue">@Model.AccountVM.ContributionsAccount</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            if (Model.ContributionScheduleVM != null)
+                            {
+                                <div class="col-md-5">
+                                    <div class="card border-info mb-3" style="max-width: 30rem;">
+                                        <div class="card-header">Next Contribution Schedule</div>
+                                        <div class="card-body text-info">
+                                            <p class="card-text">
+                                                Your next contribution is on @Model.ContributionScheduleVM.DateOfNextContribution.ToLongDateString().
+                                                Contribution amount is <span class="naira">N</span><span class="moneyValue">@Model.ContributionScheduleVM.Amount</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-7">
+                                    <div class="card border-info mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">Next Contribution Schedule</div>
+                                        <div class="card-body text-info">
+                                            <p class="card-text">
+                                                No Schedule
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="col-md-3">
+                                <div class="card border-danger mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Stop Contributions</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">
+                                            <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal">Stop Contribution</button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider"><i class="icon-circle"></i></div>
+                            if (Model.ContributionScheduleVM != null)
+                            {
+                                <h4 class="theme_color nomargin">
+                                    Next Contribution:
+                                </h4>
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date Of Next Contribution</th>
+                                                <th>Amount to Contribute</th>
+                                                <th>Paid</th>
+                                                <th>Contribution</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>@Model.ContributionScheduleVM.DateOfNextContribution.ToLongDateString()</td>
+                                                <td><span class="naira">N</span><span class="moneyValue">@Model.ContributionScheduleVM.Amount</span></td>
+                                                <td>
+                                                    @if (!Model.ContributionScheduleVM.Paid)
+                                                    {
+                                                        <span>Not yet</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Yes</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (Model.ContributionScheduleVM.InitiatedContribution.DeductionMode == "One off")
+                                                    {
+                                                        if (Model.ContributionScheduleVM.DateOfNextContribution > DateTime.Now)
+                                                        {
+                                                            <span class="timeToGo">@Model.ContributionScheduleVM.DateOfNextContribution</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button id="contributeNow" data-id="@Model.ContributionScheduleVM.Id" class="btn btn-primary">Contribute Now</button>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="timeToGo">@Model.ContributionScheduleVM.DateOfNextContribution</span>
+                                                    }
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            <div class="divider"><i class="icon-circle"></i></div>
+                            if (Model.ProcessVMs.Count() > 0)
+                            {
+                                <h4 class="nomargin theme_color">Previous payments:</h4>
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of Contribution</th>
+                                                <th>Amount Contributed</th>
+                                                <th>Deduction Mode</th>
+                                                <th>Contribution Mode</th>
+                                                <th>Paid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                var count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <td>@count</td>
+                                                        <td class="timeContribution">@item.TimeOfContribution</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.AmountPaid</span></td>
+                                                        <td>@item.DeductionMode</td>
+                                                        <td>@item.ContributionType</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("ongoing-contributions", new { page }))
+                            }
+
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script src="~/Content/User/js/components/moment.js"></script>
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+
+            // time to go
+            var $nextTime = $(".timeToGo").text();
+            var m = moment($nextTime, 'DD-MM-YYYY');
+            $(".timeToGo").text(m.fromNow());
+
+            $(".timeContribution").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+
+            // When you click on Contribute now
+            $("#contributeNow").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).attr("data-id");
+                var url = "/Contributions/ContributeNow";
+                $.ajax({
+                    url: url,
+                    data: { id: id },
+                    type: "POST",
+                    success: function (data) {
+                        location.reload();
+                    },
+                })
+            })
+
+            // When you click yes, you want to cancel contribution
+            $("#cancelContribution").on("click", function (e) {
+                e.preventDefault();
+                var id = $(this).attr("data-conId");
+                var url = "/Contributions/CancelContribution";
+                $.ajax({
+                    url: url,
+                    data: { id: id },
+                    type: "POST",
+                    success: function (data) {
+                        location.reload();
+                    },
+                })
+            })
+        });
+    </script>
+}

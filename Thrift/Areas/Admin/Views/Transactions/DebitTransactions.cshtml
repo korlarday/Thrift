@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Contributions.WithdrawalRequestVM>
+
+@{
+    ViewBag.Title = "DebitTransactions";
+}
+
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>All Cash Withdrawn</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        List of all cash withdrawal
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (Model.Count() < 1)
+                            {
+                                <p>No cash has been withdrawn.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Username</th>
+                                                <th>Date of Request</th>
+                                                <th>Amount Withdrawn</th>
+                                                <th>Approved By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <th>@item.Customer.Username</th>
+                                                        <td class="dateSent">@item.DateSent</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.Amount</span></td>
+                                                        <td>@item.Responder.Username</td>
+                                                        
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("credit-transactions", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            
+
+            $(".dateSent").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+        });
+    </script>
+}

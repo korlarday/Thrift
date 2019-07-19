@@ -1,0 +1,170 @@
+﻿@model Thrift.Models.ViewModel.Account.RegistrationVM
+
+@{
+    ViewBag.Title = "View Profile";
+}
+
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+<!-- Content
+============================================= -->
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h2>My Profile</h2>
+                    </div>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+                <div class="row">
+                    <div class="process_style col-md-8 offset-md-2">
+                        <div class="col-md-6 offset-md-1" style="max-width: 150px;">
+                            <img style="width: 100%" src="/Images/Uploads/Passports/@Model.Id/Thumbs/@Model.PassportName" alt="passport" />
+                        </div>
+                        <div class="col-md-9 offset-md-1 mt-5">
+                            <h4>Basic Information:</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>@Model.FirstName @Model.LastName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Username</th>
+                                            <td>@Model.Username</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Address</th>
+                                            <td>@Model.Address</td>
+                                        </tr>
+                                        <tr>
+                                            <th>State Of Origin</th>
+                                            <td>@Model.StateOfOrigin</td>
+                                        </tr>
+                                        <tr>
+                                            <th>LGA</th>
+                                            <td>@Model.LGA</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>@Model.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Phone Number</th>
+                                            <td>@Model.PhoneNumber</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Next of Kin Name</th>
+                                            <td>@Model.NextOfKinName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Next of Kin Email</th>
+                                            <td>@Model.NextOfKinEmail</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Next of Kin Phone Number</th>
+                                            <td>@Model.NextOfKinPhoneNumber</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="#" class="btn btn-primary offset-md-4">Edit Basic Info</a>
+                        </div>
+                    </div>
+
+
+                    <div class="process_style col-md-8 offset-md-2">
+                        <div class="col-md-9 offset-md-1 mt-5">
+                            <h4>Account Information:</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Bank Name</th>
+                                            <td>@Model.BankName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Name</th>
+                                            <td>@Model.AccountName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <td>@Model.AccountNumber</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="#" class="btn btn-primary offset-md-4">Edit Account Info</a>
+                        </div>
+                    </div>
+
+                    <div class="process_style col-md-8 offset-md-2">
+                        <div class="col-sm-12 mt-5">
+                            <h4>Beneficiaries:</h4>
+                            @if (Model.Beneficiaries.Count() < 1)
+                            {
+                                <p>No Beneficiaries registered yet.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>NAME</th>
+                                                <th>PHONE NUMBER</th>
+                                                <th>EMAIL</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int count = 1;
+                                                foreach (var item in Model.Beneficiaries)
+                                                {
+                                                    <tr>
+                                                        <th scope="row">@count</th>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.PhoneNumber</td>
+                                                        <td>@item.Email</td>
+                                                        <td>
+                                                            <a href="" class="btn btn-danger btn-sm">Remove</a>
+                                                        </td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            }
+                            <a href="/Account/add-beneficiary" class="btn btn-primary offset-md-4">Add Beneficiaries</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->

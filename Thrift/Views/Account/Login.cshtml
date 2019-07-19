@@ -1,0 +1,108 @@
+﻿@model Thrift.Models.ViewModel.Account.LoginVM
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="SemiColonWeb" />
+
+    <!-- Stylesheets
+    ============================================= -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/css/bootstrap.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/style.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/css/dark.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/css/font-icons.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/css/animate.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/User/css/magnific-popup.css")" type="text/css" />
+
+    <link rel="stylesheet" href="css/responsive.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Document Title
+    ============================================= -->
+    <title>Login | Thrift</title>
+
+</head>
+
+<body class="stretched">
+
+    <!-- Document Wrapper
+    ============================================= -->
+    <div id="wrapper" class="clearfix">
+
+        <!-- Content
+        ============================================= -->
+        <section id="content">
+
+            <div class="content-wrap nopadding">
+
+                <div class="section nopadding nomargin" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; background: #444;"></div>
+
+                <div class="section nobg full-screen nopadding nomargin">
+                    <div class="container-fluid vertical-middle divcenter clearfix">
+
+                        <div class="center">
+                            <a href="/Home"><img src="@Url.Content("~/Content/User/images/logo-dark.png")" alt="Canvas Logo"></a>
+                        </div>
+
+                        <div class="card divcenter noradius noborder" style="max-width: 400px;">
+                            <div class="card-body" style="padding: 40px;">
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "nobottommargin" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <h3>Login to your Account</h3>
+                                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                    <div class="col_full">
+                                        @Html.LabelFor(model => model.Username)
+                                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control not-dark" } })
+                                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="col_full">
+                                        @Html.LabelFor(model => model.Password)
+                                        @Html.PasswordFor(model => model.Password, new { @class = "form-control not-dark" })
+                                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="col_full nobottommargin">
+                                        <button type="submit" class="button button-3d button-black nomargin" id="login-form-submit" name="login-form-submit" value="login">Login</button>
+                                        <a href="#" class="fright">Forgot Password?</a>
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+
+                        <div class="center dark"><small>Copyrights &copy; All Rights Reserved by Canvas Inc.</small></div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section><!-- #content end -->
+
+    </div><!-- #wrapper end -->
+    <!-- Go To Top
+    ============================================= -->
+    <div id="gotoTop" class="icon-angle-up"></div>
+
+    <!-- External JavaScripts
+    ============================================= -->
+    <script src="~/Content/User/js/jquery.js"></script>
+    <script src="~/Content/User/js/plugins.js"></script>
+
+    <!-- Footer Scripts
+    ============================================= -->
+    <script src="~/Content/User/js/functions.js"></script>
+
+</body>
+</html>

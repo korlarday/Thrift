@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Contributions.ContributionProcessVM>
+
+@{
+    ViewBag.Title = "CreditTransactions";
+}
+
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>All Contributions payments</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        ALL PAYMENTS
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>List of Previous Payments:</h5>
+                            @if (Model.Count() < 1)
+                            {
+                                <p>No payment has been made.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Username</th>
+                                                <th>Date of Contribution</th>
+                                                <th>Amount Contributed</th>
+                                                <th>Deduction Mode</th>
+                                                <th>Contribution Mode</th>
+                                                <th>Paid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <th>@item.Customer.Username</th>
+                                                        <td class="timeContribution">@item.TimeOfContribution</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.AmountPaid</span></td>
+                                                        <td>@item.DeductionMode</td>
+                                                        <td>@item.ContributionType</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("credit-transactions", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+
+
+            $(".timeContribution").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+
+            function ToJavaScriptDate(value) {
+                var pattern = /Date\(([^)]+)\)/;
+                var results = pattern.exec(value);
+                var dt = new Date(parseFloat(results[1]));
+                return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+            }
+        });
+    </script>
+}

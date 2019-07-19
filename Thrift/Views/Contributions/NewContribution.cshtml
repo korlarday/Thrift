@@ -1,0 +1,139 @@
+﻿@model Thrift.Models.ViewModel.Contributions.InitiatedContributionsVM
+
+@{
+    ViewBag.Title = "New Contribution";
+}
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+<!-- Content
+============================================= -->
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h2>Create New Contribution</h2>
+                    </div>
+                    @if (Model.StartNew)
+                    {
+                        if (Model.Beneficiary)
+                        {
+                            <div class="process_style col-md-6 offset-md-3">
+                                @using (Html.BeginForm("new-contribution", "Contributions", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                    @Html.AntiForgeryToken()
+                                    <div class="col-12 form-group mb-4">
+                                        @Html.LabelFor(model => model.ContributionMode, htmlAttributes: new { @class = "control-label" })
+                                        @Html.DropDownListFor(model => model.ContributionMode, Model.ContributionModeSelect, "Select Contribution Mode", new { @class = "form-control contributionMode" })
+                                        @Html.ValidationMessageFor(model => model.ContributionMode, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="col-12 form-group mb-4">
+                                        @Html.LabelFor(model => model.ContributionAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ContributionAmount, new { htmlAttributes = new { @class = "form-control amount" } })
+                                        @Html.ValidationMessageFor(model => model.ContributionAmount, "", new { @class = "text-danger" })
+                                        <span class="textIn_form"><span class="naira">N</span><span class="moneyValue" id="spanMoney"></span></span>
+                                    </div>
+
+                                    <div class="col-12 form-group mb-4">
+                                        @Html.LabelFor(model => model.DeductionMode, htmlAttributes: new { @class = "control-label" })
+                                        @Html.DropDownListFor(model => model.DeductionMode, Model.DeductionModeSelect, "Select Deduction Mode", new { @class = "form-control deduction" })
+                                        @Html.ValidationMessageFor(model => model.DeductionMode, "", new { @class = "text-danger" })
+                                        <p class="textIn_form" id="deductionInfo"></p>
+                                    </div>
+
+
+                                    <div class="offset-sm-5">
+                                        <button type="submit" class="button button-3d button-black submit">Submit</button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <h5>You need to add at least one beneficiary before you start contributions.</h5>
+                        }
+                    }
+                    else
+                    {
+                        <h5> You have an ongoing contributions.</h5>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script>
+        $(function() {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+
+            // To format money and show
+            $(".amount").on("input", function () {
+                var $this = $(this);
+                var $money = $this.val();
+                $("#spanMoney").text(formatMoney($money));
+            })
+
+            // To add text note to deduction types
+            function DeductionText() {
+                var $value = $(".deduction").val();
+                var $text = "";
+                var $deductionInfo = $("#deductionInfo");
+                if ($value == "One off") {
+                    $text = "You have to initiate the payment when your contribution is due. " +
+                        "If you don't pay on time, your contributions will be stopped.";
+                    $deductionInfo.text($text);
+                    $deductionInfo.show();
+                }
+                else if ($value == "Recurrent") {
+                    $text = "Deductions will be done automatically when payment is due.";
+                    $deductionInfo.text($text);
+                    $deductionInfo.show();
+                }
+                else {
+                    $deductionInfo.hide();
+                }
+            }
+            DeductionText();
+            $(".deduction").on("change", function () {
+                DeductionText();
+            })
+
+        });
+    </script>
+}

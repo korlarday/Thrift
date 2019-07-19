@@ -1,0 +1,180 @@
+﻿@model Thrift.Areas.Admin.Models.Investment.SelectAvailableCashVM
+
+@{
+    ViewBag.Title = "Select Available Cash";
+}
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Select Cash for investment</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Select Cash
+                    </h2>
+                </div>
+                @if (TempData["SM"] != null)
+                {
+                    <div class="alert bg-green">
+                        @TempData["SM"]
+                    </div>
+                }
+                <div class="row" style="margin-top: 25px;">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Total Investment Balance</th>
+                                        <td><span class="naira">N</span><span class="moneyValue">@Model.CurrentInvestBalance</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Total Amount Selected</th>
+                                        <td><span class="naira">N</span><span class="moneyValue" id="totalSelected"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="body table-responsive">
+                    @if (Model.Customers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>USERNAME</th>
+                                    <th>AMOUNT AVAILABLE</th>
+                                    <th>SELECT</th>
+                                </tr>
+                            </thead>
+                            <tbody class="cashInvestment">
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model.Customers)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Username</td>
+                                            <td class="cash">
+                                                <span class="naira">N</span>
+                                                <span class="moneyValue">@item.AmountAvailableToInvest</span>
+                                                <span class="real" style="display:none">@item.AmountAvailableToInvest</span>
+                                            </td>
+                                            <td>
+                                                <button href="#" data-cusId="@item.Id" class="btn bg-success waves-effect select">Select</button>
+                                                <button href="#" style="display:none" data-cusId="@item.Id" class="btn bg-danger waves-effect unselect">Unselect</button>
+                                            </td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>No cash available for investment.</p>
+                    }
+                </div>
+                @if (Model.Customers.Any())
+                {
+                    <div class="col-md-offset-5" style="padding-bottom: 25px !important">
+                        <button class="btn bg-green" id="invest-cash">Invest Selected Cash</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+</div>
+
+@section Scripts{
+
+    <script>
+        $(function () {
+        function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+        var customers = [];
+        var adminId = $("#adminId").text();
+        var AmountSelected = 0;
+
+        // When you click on Select
+        $(".cashInvestment").on("click", ".select", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var cusId = $this.attr("data-cusId");
+            var $cash = parseFloat($this.parent().parent().children(".cash").find(".real").text());
+            AmountSelected += $cash;
+            $("#totalSelected").text(formatMoney(AmountSelected));
+            customers.push(cusId);
+            $this.parent().parent().addClass("customerSelect");
+            $this.parent().find(".unselect").show()
+            $this.hide();
+        });
+
+        // When you click on unselect
+        $(".cashInvestment").on("click", ".unselect", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var cusId = $this.attr("data-cusId");
+            var $cash = parseFloat($this.parent().parent().children(".cash").find(".real").text());
+            AmountSelected -= $cash;
+            $("#totalSelected").text(formatMoney(AmountSelected));
+            customers.splice(customers.indexOf(cusId), 1);
+            $this.parent().parent().removeClass("customerSelect");
+            $this.parent().find(".select").show()
+            $this.hide();
+        })
+
+        // When you click on invest selected cash
+        $("#invest-cash").on("click", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            $this.attr("disabled", true);
+            if (customers.length < 1) {
+                console.log("no customers was selected");
+                $this.attr("disabled", false);
+            } else {
+                $this.attr("disabled", false);
+                var url = "/Admin/Investments/InvestSelectedCash"
+                $.ajax({
+                    url: url,
+                    data: { customers: customers },
+                    type: "POST",
+                    success: function (e) {
+                        location.reload();
+                    }
+                })
+            }
+        })
+    })
+    </script>
+}

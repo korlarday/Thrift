@@ -1,0 +1,158 @@
+﻿@model Thrift.Models.ViewModel.Contributions.OngoingContributionVM
+
+@{
+    ViewBag.Title = "Ongoing Contributions";
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Customers</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        CONTRIBUTION INFORMATION
+                    </h2>
+                    <a href="/Admin/Customers/view-profile/@Model.Username" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back to Profile</a>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Total Amount Contributed</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.InitiatedContributionVM.TotalAmount</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Amount Withdrawn</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.AccountVM.WithdrawAccount</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Account Balance</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.AccountVM.ContributionsAccount</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h5>Next contribution day:</h5>
+                            @if (Model.ContributionScheduleVM == null)
+                            {
+                                <p>This customer does not have an ongoing contributions.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of next contribution</th>
+                                                <th>Contribution Mode</th>
+                                                <th>Deduction Mode</th>
+                                                <th>Amount</th>
+                                                <th>Paid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            <tr>
+                                                <th>1</th>
+                                                <td>@Model.ContributionScheduleVM.DateOfNextContribution.ToLongDateString()</td>
+                                                <td>@Model.InitiatedContributionVM.ContributionMode</td>
+                                                <td>@Model.InitiatedContributionVM.DeductionMode</td>
+                                                <td><span class="naira">N</span><span class="moneyValue">@Model.ContributionScheduleVM.Amount</span></td>
+                                                <td>No</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        PREVIOUS PAYMENTS
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>List of Previous Payments:</h5>
+                            @if (Model.ProcessVMs.Count() < 1)
+                            {
+                                <p>No payment has been made.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of Contribution</th>
+                                                <th>Amount Contributed</th>
+                                                <th>Deduction Mode</th>
+                                                <th>Contribution Mode</th>
+                                                <th>Paid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <td class="dateContribution">@item.TimeOfContribution</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.AmountPaid</span></td>
+                                                        <td>@item.DeductionMode</td>
+                                                        <td>@item.ContributionType</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("ongoing-contributions", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+
+            $(".dateContribution").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+        });
+    </script>
+}

@@ -1,0 +1,173 @@
+﻿@model Thrift.Models.ViewModel.Contributions.WithdrawalRequestVM
+
+@{
+    ViewBag.Title = "View Request";
+}
+
+@*Modal code*@
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="defaultModalLabel">Confirm?</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to accept the withdrawal request?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-red waves-effect" data-dismiss="modal">Cancel</button>
+                <a href="/Admin/Transactions/AcceptRequest/@Model.Slug" class="btn bg-green waves-effect">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>REQUEST DETAILS</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        CASH WITHDRAWAL DETAILS
+                    </h2>
+                    <a href="/Admin/Transactions/requests" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back to Requests</a>
+                </div>
+                <div class="body"> 
+                    <div class="row">
+                        @if (TempData["SM"] != null)
+                        {
+                            <div class="alert bg-green">
+                                @TempData["SM"]
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            <div style="max-width: 150px;">
+                                <img style="width: 100%" src="/Images/Uploads/Passports/@Model.Customer.Id/Thumbs/@Model.Customer.PassportName" alt="passport" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-md-offset-1">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>@Model.Customer.FirstName @Model.Customer.LastName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Username</th>
+                                            <td>@Model.Customer.Username</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Amount Contributed</th>
+                                            <td>
+                                                <span class="naira">N</span>
+                                                <span class="money">@Model.AccountBalance</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Available Profit</th>
+                                            <td>
+                                                <span class="naira">N</span>
+                                                <span class="money">@Model.AvailableProfit</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Requested Amount</th>
+                                            <td><span class="naira">N</span><span class="money">@Model.Amount</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="text-align: center">
+                                @if (Model.RespondBy == null)
+                                {
+                                    <button class="btn btn-success btn-lg" data-toggle="modal" data-target="#defaultModal" style="margin: 20px;">Accept</button>
+                                    <button id="reject" class="btn btn-danger btn-lg" style="margin: 20px;">Reject</button>
+                                }
+                                else
+                                {
+                                    if (Model.Approve)
+                                    {
+                                        <h1>Approved</h1>
+                                    }
+                                    else
+                                    {
+                                        <h1>Rejected</h1>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row clearfix" style="display: none" id="replyForm">
+                            <div class="col-sm-6 col-md-offset-3 process_style">
+                                <h2 class="card-inside-title" style="text-align: center">Reason for rejection</h2>
+                                @using (Html.BeginForm("RejectRequest", "Transactions", FormMethod.Post))
+                                {
+                                    @Html.ValidationSummary(false, "", new { @class = "text-danger ml-3" })
+                                    @Html.AntiForgeryToken()
+                                    if (TempData["Error"] != null)
+                                    {
+                                        <p style="color:red">@TempData["Error"]</p>
+                                    }
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="4" class="form-control no-resize" name="reason" placeholder="Enter reason for rejection..."></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="userSlug" value="@Model.Slug" />
+                                    <div class="col-md-offset-5">
+                                        <button id="cancelReject" class="btn btn-danger">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Send</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".money").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+
+            // When you click on reject the display the reason form
+            $("#reject").on("click", function (e) {
+                e.preventDefault();
+                $("#replyForm").show();
+            });
+
+            // When you click on cancel reject
+            $("#cancelReject").on("click", function (e) {
+                e.preventDefault();
+                $("#replyForm").hide();
+            });
+        });
+    </script>
+}

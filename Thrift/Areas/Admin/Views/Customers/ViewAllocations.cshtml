@@ -1,0 +1,198 @@
+﻿@model Thrift.Areas.Admin.Models.AdminAllocationVM
+
+@{
+    ViewBag.Title = "ViewAllocations";
+}
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Administrator</h2>
+    </div>
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        List of customers (<a href="/Admin/Customers/view-profile/@Model.AdminAndCustomer.Admin.Username">@Model.AdminAndCustomer.Admin.Username</a>) is currently managing
+                    </h2>
+                    <a href="/Admin/Customers/customer-allocations" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back</a>
+                </div>
+                @if (TempData["SM"] != null)
+                {
+                    <div class="alert bg-green">
+                        @TempData["SM"]
+                    </div>
+                }
+                <div class="body table-responsive">
+                    @if (Model.AdminAndCustomer.Customers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>USERNAME</th>
+                                    <th>NAME</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody class="customers">
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model.AdminAndCustomer.Customers)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td><a href="/Admin/Customers/view-profile/@item.Customer.Username">@item.Customer.Username</a></td>
+                                            <td>@item.Customer.FirstName @item.Customer.LastName</td>
+                                            <td>
+                                                <button data-cusId="@item.Customer.Id" class="btn bg-red waves-effect remove">Remove</button>
+                                            </td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>This administrator is currently managing no customer.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Unallocated Customers
+                    </h2>
+                </div>
+                <div class="body table-responsive">
+                    @if (Model.UnAllocatedCustomers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>USERNAME</th>
+                                    <th>NAME</th>
+                                    <th>ADD</th>
+                                </tr>
+                            </thead>
+                            <tbody class="unallocatedCustomers">
+                                @{
+                                    int count = 1;
+                                    foreach (var item in Model.UnAllocatedCustomers)
+                                    {
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Username</td>
+                                            <td>@item.FirstName @item.LastName</td>
+                                            <td>
+                                                <button href="#" data-cusId="@item.Id" class="btn bg-success waves-effect select">Select</button>
+                                                <button href="#" style="display:none" data-cusId="@item.Id" class="btn bg-danger waves-effect unselect">Unselect</button>
+                                            </td>
+                                        </tr>
+                                        ++count;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p>There are currently no allocated customers.</p>
+                    }
+                </div>
+                <div class="col-md-offset-5" style="padding-bottom: 25px !important">
+                    <button class="btn bg-green" id="add-customers">Add Customers to Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #END# Striped Rows -->
+</div>
+<span style="display:none" id="adminId">@Model.AdminAndCustomer.Admin.Id</span>
+
+@section Scripts{
+
+<script>
+    $(function () {
+        var customers = [];
+        var adminId = $("#adminId").text();
+
+        // When you click on Select
+        $(".unallocatedCustomers").on("click", ".select", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var cusId = $this.attr("data-cusId");
+            customers.push(cusId);
+            $this.parent().parent().addClass("customerSelect");
+            $this.parent().find(".unselect").show()
+            $this.hide();
+        });
+
+        // When you click on unselect
+        $(".unallocatedCustomers").on("click", ".unselect", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var cusId = $this.attr("data-cusId");
+            customers.splice(customers.indexOf(cusId), 1);
+            $this.parent().parent().removeClass("customerSelect");
+            $this.parent().find(".select").show()
+            $this.hide();
+        })
+
+        // When you click on add customers
+        $("#add-customers").on("click", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            $this.attr("disabled", true);
+            if (customers.length < 1) {
+                console.log("no customers was selected");
+                $this.attr("disabled", false);
+            } else {
+                var url = "/Admin/Customers/AssignCustomers"
+                $.ajax({
+                    url: url,
+                    data: { customers: customers, adminId: adminId },
+                    type: "POST",
+                    success: function (e) {
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log("An error was encountered");
+                    }
+                })
+            }
+        })
+
+        // When you click on remove customer
+        $(".customers").on("click", ".remove", function (e) {
+            e.preventDefault();
+            var cusId = $(this).attr("data-cusId");
+            $(this).attr("disabled", true);
+            var url = "/Admin/Customers/RemoveCustomer"
+                $.ajax({
+                    url: url,
+                    data: { cusId: cusId },
+                    type: "POST",
+                    success: function (e) {
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log("An error was encountered");
+                    }
+                })
+        })
+    })
+</script>
+}

@@ -1,0 +1,126 @@
+﻿@model Thrift.Models.ViewModel.Contributions.CashWithdrawVM
+
+@{
+    ViewBag.Title = "WithdrawCash";
+}
+
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h3>Cash Withdrawal</h3>
+                    </div>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+
+
+                    @if (Model.AccountBalance < 1)
+                    {
+                        <h5 class="ml-3">You can't withdraw cash because your account is empty.</h5>
+                    }
+                    else
+                    {
+                        if (Model.withdrawalRequest)
+                        {
+                            <h5 class="ml-3">You have a pending request. Please wait for a reply.</h5>
+                        }
+                        else
+                        {
+                            <h5 style="margin-bottom: 0">Your account balance is <span class="naira">N</span><span class="moneyValue">@Model.AccountBalance</span></h5>
+                            <h5>Your profit balance is <span class="naira">N</span><span class="moneyValue">@Model.ProfitBalance</span></h5>
+
+                            <div class="row">
+                                <div class="process_style col-md-6 offset-md-3">
+                                    <div class="style-msg infomsg">
+                                        <div class="sb-msg">
+                                            <i class="icon-info-sign"></i>
+                                            Please note that if you withdraw all cash from your account, any ongoing contributions will be stopped.
+                                        </div>
+                                    </div>
+                                    @using (Html.BeginForm("withdraw-cash", "Contributions", FormMethod.Post))
+                                    {
+                                        @Html.ValidationSummary(false, "", new { @class = "text-danger ml-3" })
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="col-12 form-group mb-4">
+                                            @Html.LabelFor(model => model.AmountToWithdraw, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.AmountToWithdraw, new { htmlAttributes = new { @class = "form-control amount" } })
+                                            @Html.ValidationMessageFor(model => model.AmountToWithdraw, "", new { @class = "text-danger" })
+                                            <span class="textIn_form"><span class="naira">N</span><span class="moneyValue" id="spanMoney"></span></span>
+                                        </div>
+
+                                        <div>
+                                            <button style="display:block;margin:auto" type="submit" class="button button-3d submit">Send Request</button>
+                                        </div>
+                                    }
+                                <hr />
+                                    <span style="display: block;text-align:center;margin:20px 0">OR</span>
+
+                                    <div>
+                                        <button style="display:block;margin:auto" class="btn btn-success">Withdraw Available Profit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+
+            // To format money and show
+            $(".amount").on("input", function () {
+                var $this = $(this);
+                var $money = $this.val();
+                $("#spanMoney").text(formatMoney($money));
+            })
+        });
+    </script>
+}

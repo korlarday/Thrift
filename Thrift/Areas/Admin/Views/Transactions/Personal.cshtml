@@ -1,0 +1,187 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Contributions.InitiatedContributionsVM>
+
+@{
+                /**/
+
+                ViewBag.Title = "Personal";
+}
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Personal Contribution List</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        CONTRIBUTIONS IN PROGRESS
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Personal Contributions:</h5>
+                            @if (!Model.Any())
+                            {
+                                <p>No contributions created yet.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>START DATE</th>
+                                                <th>END DATE</th>
+                                                <th>CONTRIBUTION MODE</th>
+                                                <th>AMOUNT PER CONTRIBUTION</th>
+                                                <th>TOTAL AMOUNT</th>
+                                                <th>CREATED BY</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td style="display: none" class="id">@item.Id</td>
+                                                        <th>@count</th>
+                                                        <td>@item.ContributionStartDate.ToLongDateString()</td>
+                                                        <td>@item.ContributionEndDate.ToLongDateString()</td>
+                                                        <td>@item.ContributionMode</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.AmountPerDeduction</span></td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.TotalAmount</span></td>
+                                                        <td>@item.Username</td>
+                                                        <td>
+                                                            @*<a href="#" class="btn bg-teal waves-effect viewDetailsp">View</a>*@
+                                                        </td>
+                                                    </tr>
+                                                    ++@count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+            function ToJavaScriptDate(value) {
+                var pattern = /Date\(([^)]+)\)/;
+                var results = pattern.exec(value);
+                var dt = new Date(parseFloat(results[1]));
+                return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+            }
+
+            // When you click on Personal contibution View
+            $(".personal_table").on("click", ".viewDetailsp", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $id = $this.parent().parent().children(".id").text();
+                url = "/Admin/Customers/GetPersonalDetails";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: { id: $id },
+                    success: function (data) {
+                        console.log(data)
+                        var $scheduleBody = $(".scheduleBody");
+
+                        var $count = 0;
+                        $scheduleBody.children("tr").remove();
+                        $.each(data, function () {
+                            ++$count;
+                            var $date = new Date(ToJavaScriptDate(this.Date)).toDateString();
+                            var $tr = "<tr><td>" + $count + "</td>";
+                            $tr += "<td>" + $date + "</td>";
+                            $tr += "<td>N" + formatMoney(this.Amount) + "</td>";
+                            $tr += "<td>" + this.Paid + "</td></tr>";
+
+                            $scheduleBody.append($tr);
+                        })
+                        $("#btn_open_personal").click();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("Unable to fetch schedules.")
+                        //alert(xhr.status);
+                        //alert(thrownError);
+
+                    }
+                })
+
+            })
+
+            // When you click on Group Contribution View
+            $(".group_table").on("click", ".viewDetailsg", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $id = $this.parent().parent().children(".id").text();
+                var $customerId = $this.parent().parent().children(".customerId").text();
+                url = "/Admin/Customers/GetGroupSchedule";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: { id: $id, customerId: $customerId },
+                    success: function (data) {
+                        console.log(data)
+                        var $scheduleBody = $(".groupScheduleBody");
+
+                        var $count = 0;
+                        $scheduleBody.children("tr").remove();
+                        $.each(data, function () {
+                            ++$count;
+                            var $date = new Date(ToJavaScriptDate(this.Date)).toDateString();
+                            var $tr = "<tr><td>" + $count + "</td>";
+                            $tr += "<td>" + $date + "</td>";
+                            $tr += "<td>N" + formatMoney(this.Amount) + "</td>";
+                            $tr += "<td>" + this.Paid + "</td></tr>";
+
+                            $scheduleBody.append($tr);
+                        })
+                        $("#btn_open_group").click();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("Unable to fetch schedules.")
+                        //alert(xhr.status);
+                        //alert(thrownError);
+
+                    }
+                })
+
+            })
+        });
+    </script>
+}

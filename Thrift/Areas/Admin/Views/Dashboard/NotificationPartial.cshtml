@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Contributions.WithdrawalRequestVM>
+
+    <li class="dropdown">
+        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+            <i class="material-icons">notifications</i>
+            @{ 
+                int newNotification = 0;
+
+                foreach (var element in Model)
+                {
+                    if(element.AdminStatus == false)
+                    {
+                        ++newNotification;
+                        <span class="label-count">@newNotification</span>
+                    }
+                }
+            }
+
+        </a>
+        <ul class="dropdown-menu">
+            <li class="header">WITHDRAWAL NOTIFICATIONS</li>
+            <li class="body">
+                @if (Model.Any())
+                {
+                <ul class="menu notificationsMenu">
+                    @foreach (var item in Model)
+                    {
+                        <li style="border-bottom: 1px solid #DCDCDC">
+                            <a href="/Admin/Transactions/view-request/@item.Slug">
+                                
+                                <div class="menu-info">
+                                    <h4>
+                                        Request From @item.Customer.Username
+                                        @if (item.AdminStatus == false)
+                                        { <span class="new badge" style="margin-left: 10px">new</span>}
+                                    </h4>
+                                    <p>
+                                        <i class="material-icons">access_time</i>
+                                    <span data-utcdate="@item.DateSent.ToString("s", System.Globalization.CultureInfo.InvariantCulture)"></span>
+                                    </p>
+                                </div>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+                }
+                else
+                {
+                    <p style="padding:10px;">No new notifications.</p>
+                }
+
+            </li>
+            <li class="footer">
+                <a href="javascript:void(0);">View All Notifications</a>
+            </li>
+        </ul>
+    </li>

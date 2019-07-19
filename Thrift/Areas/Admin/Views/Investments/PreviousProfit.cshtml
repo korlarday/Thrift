@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Thrift.Models.ViewModel.Investment.ProfitVM>
+
+@{
+    ViewBag.Title = "PreviousProfit";
+}
+
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>All Previous Profit Payments</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Previous Payments
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (Model.Count() < 1)
+                            {
+                                <p>No profit payment has been made.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of Payment</th>
+                                                <th>Profit Amount</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <td class="datePayment">@item.DateOfPayment</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.Amount</span></td>
+                                                        <td>
+                                                            <a href="/Admin/Investments/profit-distribution/@item.Slug" class="btn bg-amber btn-success">View</a>
+                                                        </td>
+
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("previous-profits", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $(".datePayment").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+        })
+    </script>    
+}

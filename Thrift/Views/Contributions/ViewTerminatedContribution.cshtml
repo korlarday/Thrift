@@ -1,0 +1,145 @@
+﻿@model Thrift.Models.ViewModel.Contributions.ViewTerminatedContributionVM
+
+@{
+    ViewBag.Title = "Terminated Contribution";
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h3>View Contribution Details</h3>
+                    </div>
+                    <a href="/Contributions/terminated-contributions" class="btn btn-success fright">Go Back</a>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+                    <div class="row">
+
+                        @if (!Model.Processes.Any())
+                        {
+                            <h5 class="ml-3">You did not make any contributions.</h5>
+                        }
+                        else
+                        {
+                            <table class="table col-md-6">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Total Amount Contributed</th>
+                                        <td><span class="naira">N</span><span class="moneyValue">@Model.InitiatedContribution.TotalAmount</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Number of times contribution was made</th>
+                                        <td>@Model.Processes.Count()</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="divider"><i class="icon-circle"></i></div>
+                            <h4 class="theme_color nomargin">
+                                Dates of contribution:
+                            </h4>
+                            <div class="table-responsive mt-2">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date of Contributions</th>
+                                            <th>Amount</th>
+                                            <th>Deduction Mode</th>
+                                            <th>Contribution Mode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var count = ViewBag.PageNumber;
+                                            if (count == 1)
+                                            {
+                                                count = 1;
+                                            }
+                                            else
+                                            {
+                                                count = ((count - 1) * 10) + 1;
+                                            }
+                                            foreach (var item in ViewBag.OnePageOfProcesses)
+                                            {
+                                                <tr>
+                                                    <td>@count</td>
+                                                    <td>@item.TimeOfContribution.ToLongDateString()<br /> @item.TimeOfContribution.ToLongTimeString()</td>
+                                                    <td><span class="naira">N</span><span class="moneyValue">@item.AmountPaid</span></td>
+                                                    <td>@item.DeductionMode</td>
+                                                    <td>@item.ContributionType</td>
+                                                </tr>
+                                                ++count;
+                                            }
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("view-terminated-contribution", new { page }))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+
+            // time to go
+            var $nextTime = $(".timeToGo").text();
+            var m = moment($nextTime, 'DD-MM-YYYY');
+            $(".timeToGo").text(m.fromNow());
+        });
+    </script>
+}

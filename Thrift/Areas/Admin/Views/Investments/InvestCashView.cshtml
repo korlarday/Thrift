@@ -1,0 +1,66 @@
+﻿@model Thrift.Areas.Admin.Models.Investment.AmountToInvestVM
+
+@{
+    ViewBag.Title = "Invest Cash View";
+}
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Invest Cash</h2>
+    </div>
+    <!-- Striped Rows -->
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Available Cash For Investment
+                    </h2>
+                </div>
+                <div class="body">
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="alert bg-green">
+                            @TempData["SM"]
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Investment Balance</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.InvestmentBalance</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Amount Available To Invest</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.AmountToInvest</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.AmountToInvest > 1)
+                    {
+                        <div class="row">
+                            <div class="col-md-offset-5"><a href="/Admin/Investments/invest-cash" class="btn btn-success">Invest Cash</a></div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+    $(function () {
+
+    })
+    </script>
+}

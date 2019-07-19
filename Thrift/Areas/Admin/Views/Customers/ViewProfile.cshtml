@@ -1,0 +1,287 @@
+﻿@model Thrift.Models.ViewModel.Account.CustomerVM
+
+@{
+    ViewBag.Title = "View Profile";
+}
+
+<div class="modal fade" id="open_compose" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="defaultModalLabel">Compose Message</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <input type="text" id="title" class="form-control" value="">
+                            <label class="form-label">Message Title</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            <textarea rows="4" id="text" class="form-control no-resize"></textarea>
+                            <label class="form-label">Message Content</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cancel</button>
+                <button type="submit" id="sendMsg" class="btn btn-link waves-effect">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="btn_open_compose" style="display: none" type="button" class="btn btn-default waves-effect m-r-20" data-toggle="modal" data-target="#open_compose">Open</button>
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Customers</h2>
+    </div>
+    <div class="row clearfix"> 
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        BASIC INFORMATION
+                    </h2>
+                    <a href="/Admin/Customers" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back to Customers</a>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        @if (TempData["SM"] != null)
+                        {
+                            <div class="alert bg-green">
+                                @TempData["SM"]
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            <div>
+                                <img style="width: 100%" src="/Images/Uploads/Passports/@Model.Id/Thumbs/@Model.PassportName" alt="passport" />
+                            </div>
+
+                            <button id="compose_message" href="#" class="btn btn-sm bg-teal waves-effect" style="margin-top: 40px">Compose Message</button>
+                        </div>
+                        <div class="col-md-6 col-md-offset-1">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>@Model.FirstName @Model.LastName</td>
+                                            <td style="display:none;" id="cusId">@Model.Id</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Username</th>
+                                            <td>@Model.Username</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Address</th>
+                                            <td>@Model.Address</td>
+                                        </tr>
+                                        <tr>
+                                            <th>State Of Origin</th>
+                                            <td>@Model.StateOfOrigin</td>
+                                        </tr>
+                                        <tr>
+                                            <th>LGA</th>
+                                            <td>@Model.LGA</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>@Model.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Phone Number</th>
+                                            <td>@Model.PhoneNumber</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Balance</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.Account.ContributionsAccount</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Amount Invested</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.Investment.InvestmentBalance</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Available Profit</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.Investment.AvailableProfit</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Amount Withdrawn</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.Account.WithdrawAccount</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Next contribution day:</h5>
+                            @if (Model.OngoingContributions == null)
+                            {
+                                <p>This customer does not have an ongoing contributions.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of next contribution</th>
+                                                <th>Amount</th>
+                                                <th>Paid</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            <tr>
+                                                <th>1</th>
+                                                <td>@Model.OngoingContributions.DateOfNextContribution.ToLongDateString()</td>
+                                                <td><span class="naira">N</span><span class="moneyValue">@Model.OngoingContributions.Amount</span></td>
+                                                <td>No</td>
+                                                <td>
+                                                    <a href="/Admin/Customers/ongoing-contributions/@Model.Username" class="btn bg-teal waves-effect">View</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        TERMINATED CONTRIBUTIONS
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>List of Terminated Contributions:</h5>
+                            @if (Model.TerminatedContributions.Count() < 1)
+                            {
+                                <p>No terminated contributions.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>START DATE</th>
+                                                <th>END DATE</th>
+                                                <th>CONTRIBUTION MODE</th>
+                                                <th>DEDUCTION MODE</th>
+                                                <th>AMOUNT PER CONTRIBUTION</th>
+                                                <th>TOTAL AMOUNT</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in Model.TerminatedContributions)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <td class="startDate">@item.StartDate</td>
+                                                        <td class="endDate">@item.EndDate</td>
+                                                        <td>@item.ContributionMode</td>
+                                                        <td>@item.DeductionMode</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.ContributionAmount</span></td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.TotalAmount</span></td>
+                                                        <td>
+                                                            <a href="/Admin/Customers/view-terminated/@item.Slug" class="btn bg-teal waves-effect">View</a>
+                                                        </td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+
+            $(".startDate").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+
+            $(".endDate").each(function () {
+                var d = moment($(this).text(), "DD-MM-YYYY HH:mm:ss");
+                $(this).html(d.format('llll'));
+            });
+            //m = moment('2013-03-01', 'YYYY-MM-DD')
+
+            function ToJavaScriptDate(value) {
+                var pattern = /Date\(([^)]+)\)/;
+                var results = pattern.exec(value);
+                var dt = new Date(parseFloat(results[1]));
+                return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+            }
+
+            // when you click on compose message
+            $("#compose_message").on("click", function (e) {
+                e.preventDefault();
+                $("#btn_open_compose").click();
+            })
+
+            $("#sendMsg").on("click", function () {
+                // disable the form
+                if ($("#title").val() == "" || $("#text").val() == "") {
+
+                } else {
+                    var url = "/Admin/Customers/sendMessage";
+                    var cusId = $("#cusId").text();
+                    var $title = $("#title").val();
+                    var $text = $("#text").val();
+                    var obj = {
+                        Id: cusId,
+                        Title: $title,
+                        Text: $text,
+                    }
+                    $.ajax({
+                        url: url,
+                        data: {model: obj},
+                        type: "POST",
+                        success: function () {
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("Sorry, message couldn't send. An Unexpected error encountered.");
+                        }
+                    })
+                }
+            });
+
+            
+        });
+    </script>
+}

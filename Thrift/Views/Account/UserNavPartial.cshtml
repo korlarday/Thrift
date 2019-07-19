@@ -1,0 +1,22 @@
+﻿@model Thrift.Models.ViewModel.Account.UserNavPartialVM
+
+<div id="top-cart">
+    <a href="#" id="top-cart-trigger"><i class="icon-line-menu"></i></a>
+    <div class="top-cart-content">
+        <div class="top-cart-title">
+            <h4 style="text-transform: Capitalize !important">@Model.FirstName @Model.LastName</h4>
+        </div>
+        <div class="top-cart-items">
+            <div class="top-cart-item clearfix">
+                <div class="top-cart-item-desc">
+                    <a href="#">View Profile</a>
+                </div>
+            </div>
+            <div class="top-cart-item clearfix">
+                <div class="top-cart-item-desc">
+                    <a href="/Account/Logout">Logout <i class="icon-line2-logout"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

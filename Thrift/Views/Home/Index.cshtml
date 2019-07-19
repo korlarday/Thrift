@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+
+<!-- Content
+============================================= -->
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div style="margin-top: -25px !important; margin-bottom: 65px !important" class="fancy-title title-dotted-border title-center">
+                <h1>Welcome to KoboKobo</h1>
+            </div>
+
+            <div class="col_one_third">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-screen i-alt"></i></a>
+                    </div>
+                    <h3>Improve Your Financial Standards</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col_one_third">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-eye i-alt"></i></a>
+                    </div>
+                    <h3>Get Profits from Contributions</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.</p>
+                </div>
+            </div>
+
+            <div class="col_one_third col_last">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-beaker i-alt"></i></a>
+                    </div>
+                    <h3>Powerful Performance</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.</p>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="col_one_third nobottommargin">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-stack i-alt"></i></a>
+                    </div>
+                    <h3>Smart Investment</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.</p>
+                </div>
+            </div>
+
+            <div class="col_one_third nobottommargin">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-tint i-alt"></i></a>
+                    </div>
+                    <h3>Gaurantees Profits</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.</p>
+                </div>
+            </div>
+
+            <div class="col_one_third nobottommargin col_last">
+                <div class="feature-box fbox-border fbox-effect">
+                    <div class="fbox-icon">
+                        <a href="#"><i class="icon-text-width i-alt"></i></a>
+                    </div>
+                    <h3>Get Profits from Contributions</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam voluptates sunt repudiandae. Numquam alias vel a aliquam, facilis saepe.</p>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+        </div>
+
+        <div class="promo topmargin-lg promo-border bottommargin-lg promo-full">
+            <div class="container clearfix">
+                <h3>Call us today at <span>08032543423</span> or Email us at <span>support@kobokobo.net</span></h3>
+                <span>We strive to provide Our Customers with Top Notch Support to make their transactions experience wonderful</span>
+                
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->

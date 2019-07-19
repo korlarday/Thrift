@@ -1,0 +1,339 @@
+﻿@model Thrift.Models.ViewModel.Account.RegistrationVM
+
+@{
+    ViewBag.Title = "Register";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/User/css/components/datepicker.css")" type="text/css" />
+
+<!-- Page Title
+============================================= -->
+<section id="page-title">
+
+    <div class="container clearfix">
+        <h1>Register</h1>
+        <span>Join the best leading thrift organization</span>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Register</li>
+        </ol>
+    </div>
+
+</section><!-- #page-title end -->
+<!-- Content
+============================================= -->
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix"> 
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                @Html.AntiForgeryToken()
+                <div id="processTabs" class="process_style">
+                    <ul class="process-steps bottommargin clearfix">
+                        <li>
+                            <a href="#ptab1" class="i-circled i-bordered i-alt divcenter">1</a>
+                            <h5>Basic Information</h5>
+                        </li>
+                        <li>
+                            <a href="#ptab2" class="i-circled i-bordered i-alt divcenter">2</a>
+                            <h5>Mode Of Contribution</h5>
+                        </li>
+                        <li>
+                            <a href="#ptab3" class="i-circled i-bordered i-alt divcenter">3</a>
+                            <h5>Bank Details</h5>
+                        </li>
+                        <li>
+                            <a href="#ptab4" class="i-circled i-bordered i-alt divcenter">4</a>
+                            <h5>User Account Info</h5>
+                        </li>
+                    </ul>
+                    <div>
+                        <div id="ptab1">
+
+                            <div class="form-process"></div>
+                            <div class="form-row">
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.OtherName, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.OtherName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.OtherName, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    <label for="state">State Of Origin:</label> <span class="required-red">*</span>
+                                    <select class="form-control" id="state" name="StateOfOrigin">
+                                        <option value="" selected>-- Select your state --</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    <label for="lga">Local Government Area:</label> <span class="required-red">*</span>
+                                    <select class="form-control" name="LGA" id="lga">
+                                        <option value="" selected id="firststate">-- Select your LGA --</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.Town, htmlAttributes: new { @class = "control-label" }) 
+                                    @Html.EditorFor(model => model.Town, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Town, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control tleft format" } })
+                                    @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.NextOfKinName, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.NextOfKinName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.NextOfKinName, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.NextOfKinEmail, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.NextOfKinEmail, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.NextOfKinEmail, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-12 col-sm-6 form-group mb-4">
+                                    @Html.LabelFor(model => model.NextOfKinPhoneNumber, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                    @Html.EditorFor(model => model.NextOfKinPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.NextOfKinPhoneNumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <a href="#" class="button button-3d nomargin fright tab-linker" rel="2">Next &rArr;</a>
+
+                        </div>
+                        <div id="ptab2">
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.ContributionMode, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.DropDownListFor(model => model.ContributionMode, Model.ContributionModeSelect, "Select Contribution Mode", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ContributionMode, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.DeductionMode, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.DropDownListFor(model => model.DeductionMode, Model.DeductionModeSelect, "Select Deduction Mode", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DeductionMode, "", new { @class = "text-danger" })
+                            </div>
+
+                            <a href="#" class="button button-3d fright tab-linker mr-4" rel="3">Next &rArr;</a>
+                            <a href="#" class="button button-3d fright tab-linker mr-4" rel="1">Previous</a>
+                        </div>
+                        <div id="ptab3">
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                <label for="state">Select Your Bank:</label>
+                                <select class="form-control" id="bank" name="BankName">
+                                    <option value="" selected>-- Select your bank --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.AccountName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.AccountName, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Your Account Name" } })
+                                @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Your Account Number" } })
+                                @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                            </div>
+
+                            <a href="#" class="button button-3d fright tab-linker mr-4" rel="4">Next &rArr;</a>
+                            <a href="#" class="button button-3d fright tab-linker mr-4" rel="2">Previous</a>
+                        </div>
+                        <div id="ptab4">
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", placeholder = "Choose a username" } })
+                                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control" } )
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" } )
+                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                            </div>
+
+                            @*<div class="col-12 col-sm-6 form-group mb-4">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="passport">Upload Passport</label>
+                            <input type="file" name="file" id="passport" />
+                            <img style="margin-top: 15px" id="passportpreview" src="#" />
+                        </div>*@
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.Passport, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.TextBoxFor(model => model.Passport, " ", new { @type = "file", id = "passport" })
+                                @Html.ValidationMessageFor(model => model.Passport, "", new { @class = "text-danger" })
+                                <img style="margin-top: 15px" id="passportpreview" src="#" />
+                            </div>
+                            <div class="col-12 col-sm-6 form-group mb-4">
+                                @Html.LabelFor(model => model.Signature, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.TextBoxFor(model => model.Signature, " ", new { @type = "file", id = "signature" })
+                                @Html.ValidationMessageFor(model => model.Signature, "", new { @class = "text-danger" })
+                                <img style="margin-top: 15px" id="signaturepreview" src="#" />
+                            </div>
+
+                            @*<div class="col-12 col-sm-6 form-group mb-4">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="signature">Upload Signature</label>
+                            <input type="file" name="filed" id="signature" />
+                            <img style="margin-top: 15px" id="signaturepreview" src="#" />
+                        </div>*@
+
+                            <button type="submit" class="button button-3d fright mr-4">Submit</button>
+                            <a href="#" class="button button-3d fright tab-linker mr-4" rel="3">Previous</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script src="~/Content/User/js/components/moment.js"></script>
+    <script src="~/Content/User/js/components/datepicker.js"></script>
+    <script>
+        $(function() {
+            $("#processTabs").tabs({ show: { effect: "fade", duration: 400 } });
+            $('.format').datepicker({
+                autoclose: true,
+                format: "dd-mm-yyyy",
+            });
+            $( ".tab-linker" ).click(function() {
+                $( "#processTabs" ).tabs("option", "active", $(this).attr('rel') - 1);
+                return false;
+            });
+
+            fetchStateUrl = "/Account/FetchStates"
+            $.ajax({
+                type: "GET",
+                url: fetchStateUrl,
+                success: function(data) {
+                    var $dropdown = $("#state");
+                    $.each(data, function() {
+                        $dropdown.append($("<option />").val(this.State).text(this.State));
+                    })
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("Unable to fetch States at the moment.")
+                    //alert(xhr.status);
+                    //alert(thrownError);
+
+                }
+            })
+
+            // To load the local government areas
+            $("#state").on("change", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $state = $this.val();
+                var url = "/Account/FetchLga"
+                $("#lga").children("option[id!='firststate']").remove();
+                $.ajax({
+                    type: "GET",
+                    data: {state: $state},
+                    url: url,
+                    success: function(data) {
+                        var $lga = $("#lga");
+                        $.each(data.Lgas, function() {
+                            $lga.append($("<option />").val(this).text(this));
+                        })
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("Unable to fetch LGA, try reselecting the state of origin")
+                        //alert(xhr.status);
+                        //alert(thrownError);
+
+                    }
+                })
+            })
+
+            // To load the Bank names
+            $.ajax({
+                type: "GET",
+                url: "/Account/FetchBanks",
+                success: function(data) {
+                    var $dropdown = $("#bank");
+                    $.each(data, function() {
+                        $dropdown.append($("<option />").val(this.Name).text(this.Name));
+                    })
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("Unable to fetch States at the moment.")
+                    //alert(xhr.status);
+                    //alert(thrownError);
+
+                }
+            })
+
+            /*
+             * Preview Selected image
+             */
+            $("#passportpreview").hide();
+            $("#signaturepreview").hide();
+            
+
+            $("#passport").change(function () {
+                $("#passportpreview").show();
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("img#passportpreview").attr("src", e.target.result).width(200).height(200);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            })
+
+            $("#signature").change(function () {
+                $("#signaturepreview").show();
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("img#signaturepreview").attr("src", e.target.result).width(200).height(200);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            })
+        });
+    </script>
+}

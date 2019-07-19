@@ -1,0 +1,117 @@
+﻿@model Thrift.Areas.Admin.Models.DashboardVM
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>DASHBOARD</h2>
+    </div>
+
+    <!-- Widgets -->
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="info-box bg-pink hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">face</i>
+                </div>
+                <div class="content">
+                    <div class="text">CUSTOMERS</div>
+                    <div class="number count-to" data-from="0" data-to="@Model.Customers" data-speed="15" data-fresh-interval="20"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="info-box bg-cyan hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <div class="content">
+                    <div class="text">CONTRIBUTION SCHEDULES</div>
+                    <div class="number count-to" data-from="0" data-to="@Model.NumberOfSchedule" data-speed="15" data-fresh-interval="20"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="info-box bg-light-green hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">group</i>
+                </div>
+                <div class="content">
+                    <div class="text">ADMINISTRATORS</div>
+                    <div class="number count-to" data-from="0" data-to="@Model.Admin" data-speed="15" data-fresh-interval="20"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!--Amount of contribution and withdrawal-->
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="header bg-blue-grey">
+                    <h2 style="text-align: center">
+                        Account Balance
+                    </h2>
+                </div>
+                <div class="body">
+                    <h2 style="text-align: center"><span class="naira">N</span><span class="moneyValue">@Model.AccountBalance</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="header bg-red">
+                    <h2 style="text-align: center">
+                        Total Amount Invested
+                    </h2>
+                </div>
+                <div class="body">
+                    <h2 style="text-align: center"><span class="naira">N</span><span class="moneyValue">@Model.AmountInvested</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="header bg-teal">
+                    <h2 style="text-align: center">
+                        Available Profit
+                    </h2>
+                </div>
+                <div class="body">
+                    <h2 style="text-align: center"><span class="naira">N</span><span class="moneyValue">@Model.AvailableProfit</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="card">
+                <div class="header bg-teal">
+                    <h2 style="text-align: center">
+                        Total Amount Withdrawn
+                    </h2>
+                </div>
+                <div class="body">
+                    <h2 style="text-align: center"><span class="naira">N</span><span class="moneyValue">@Model.AmountWithdrawn</span></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/Admin/js/pages/widgets/infobox/infobox-2.js"></script>
+    <script>
+        $(function () {
+        });
+    </script>
+}

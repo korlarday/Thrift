@@ -1,0 +1,105 @@
+﻿@model Thrift.Areas.Admin.Models.Investment.ProfitDistributionVM
+
+@{
+    ViewBag.Title = "ProfitDistribution";
+}
+
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Profits Distribution</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Profit Distribution
+                    </h2>
+                    <a href="/Admin/Investments/previous-profits" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back to Profits</a>
+                </div>
+                <div class="body">
+                    <h3>Profit amount: <span class="naira">N</span><span class="moneyValue">@Model.ProfitAmount</span></h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Main account balance profit share:</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date of Payment</th>
+                                            <th>Profit Amount</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="personal_body">
+                                        <tr>
+                                            <th>1</th>
+                                            <td>@Model.ProfitProcessIB.DateOfPayment.ToLongDateString() <br /> @Model.ProfitProcessIB.DateOfPayment.ToLongTimeString()</td>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.ProfitProcessIB.Amount</span></td>
+                                            <td>30 %</td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Profit Distribution for Customers:</h5>
+                            @if (Model.Proccess.Count() < 1)
+                            {
+                                <p>No customer was paid.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Username</th>
+                                                <th>Date of Payment</th>
+                                                <th>Profit Amount</th>
+                                                <th>Percentage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <td>@item.Customer.Username</td>
+                                                        <td>@item.Date.ToLongDateString() <br /> @item.Date.ToLongTimeString()</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.Amount</span></td>
+                                                        <td>
+                                                            @item.Percentage %
+                                                        </td>
+
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("profit-distribution", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

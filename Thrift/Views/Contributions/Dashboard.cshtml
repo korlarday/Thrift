@@ -1,0 +1,159 @@
+﻿@model Thrift.Models.ViewModel.Contributions.DashboardModelVM
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+<!-- Content
+============================================= -->
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h2>My Dashboard</h2>
+                    </div>
+                    @if (TempData["SM"] != null)
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg">@TempData["SM"]</div>
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                    }
+                </div>
+                    @if (Model.Beneficiaries.Count() < 1)
+                    {
+                        <h4>Dear customer, you need to add at least one beneficiary before you start contribution.</h4>
+                        <div><a href="/Account/add-beneficiary" class="btn btn-primary">Add Beneficiary</a></div>
+                    }
+                    else
+                    {
+                        if (Model.Account.ContributionsAccount < 1 && Model.ContributionSchedule == null)
+                        {
+                            <div class="col-sm-12 mb-4">
+                                <a href="/Contributions/new-contribution" class="button button-3d">Start Contribution</a>
+                            </div>
+                        }
+
+                        if (Model.Account != null)
+                        {
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Total Account Balance</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">Your Total Account Balance is <span class="naira">N</span><span class="moneyValue">@Model.Account.ContributionsAccount</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Amount Withdrawn</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">
+                                            Your Total Amount Withdrawn is 
+                                            <span class="naira">N</span><span class="moneyValue">
+                                                @{
+                                                    decimal withdraw = (decimal)Model.Account.WithdrawAccount + Model.InvestmentAccount.ProfitWithdrawn;
+                                                }
+                                                 @withdraw
+                                            </span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        if (Model.InvestmentAccount != null)
+                        {
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Total Investment Balance</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">Total Amount Invested is <span class="naira">N</span><span class="moneyValue">@Model.InvestmentAccount.InvestmentBalance</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Available Profit</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">Your Total Available profit is <span class="naira">N</span><span class="moneyValue">@Model.InvestmentAccount.AvailableProfit</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        if (Model.ContributionSchedule != null)
+                        {
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Next Contribution Schedule</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">
+                                            Your next contribution is on the @Model.ContributionSchedule.DateOfNextContribution.ToLongDateString().
+                                            Amount to pay is <span class="naira">N</span><span class="moneyValue">@Model.ContributionSchedule.Amount</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-4">
+                                <div class="card border-info mb-3" style="max-width: 22rem;">
+                                    <div class="card-header">Next Contribution Schedule</div>
+                                    <div class="card-body text-info">
+                                        <p class="card-text">
+                                            No Schedule
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+        });
+    </script>
+}

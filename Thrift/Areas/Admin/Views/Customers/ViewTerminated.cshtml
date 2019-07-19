@@ -1,0 +1,144 @@
+﻿@model Thrift.Models.ViewModel.Contributions.ViewTerminatedContributionVM
+
+@{
+    ViewBag.Title = "View Terminated";
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<!-- import the included stylesheet for some (very basic) default styling -->
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>Contribution Details</h2>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        CONTRIBUTION INFORMATION
+                    </h2>
+                    <a href="/Admin/Customers/view-profile/@Model.Username" class="btn bg-teal waves-effect right" style="position: relative; top: -25px">Back</a>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Contribution Balance</th>
+                                            <td><span class="naira">N</span><span class="moneyValue">@Model.InitiatedContribution.TotalAmount</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Contribution Start Date</th>
+                                            <td>@Model.InitiatedContribution.StartDate</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Contribution End Date</th>
+                                            <td>@Model.InitiatedContribution.EndDate</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        PREVIOUS PAYMENTS
+                    </h2>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>List of Previous Payments:</h5>
+                            @if (Model.Processes.Count() < 1)
+                            {
+                                <p>No payment has been made.</p>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table personal_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date of Contribution</th>
+                                                <th>Amount Contributed</th>
+                                                <th>Deduction Mode</th>
+                                                <th>Contribution Mode</th>
+                                                <th>Paid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="personal_body">
+                                            @{
+
+                                                int count = 1;
+                                                foreach (var item in ViewBag.OnePageOfProcesses)
+                                                {
+                                                    <tr>
+                                                        <th>@count</th>
+                                                        <td>@item.TimeOfContribution.ToLongDateString() <br /> @item.TimeOfContribution.ToLongTimeString()</td>
+                                                        <td><span class="naira">N</span><span class="moneyValue">@item.AmountPaid</span></td>
+                                                        <td>@item.DeductionMode</td>
+                                                        <td>@item.ContributionType</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    ++count;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProcesses, page => Url.Action("ongoing-contributions", new { page }))
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s +
+                    (j ? i.substr(0, j) + t : "") +
+                    i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
+                    (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+            $(".moneyValue").each(function () {
+                var $this = $(this);
+                var $money = $this.text();
+                $money = formatMoney($money);
+                $this.text($money);
+            })
+            function ToJavaScriptDate(value) {
+                var pattern = /Date\(([^)]+)\)/;
+                var results = pattern.exec(value);
+                var dt = new Date(parseFloat(results[1]));
+                return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,109 @@
+﻿
+    <aside id="leftsidebar" class="sidebar">
+        <!-- User Info -->
+        
+        @Html.Action("UserInfoPartial", "Dashboard", new { area = "Admin" })
+        <!-- #User Info -->
+        <!-- Menu -->
+        <div class="menu">
+            <ul class="list">
+                <li class="header">MAIN NAVIGATION</li>
+                <li class="active" style="display: none">
+                    <a href="/Admin/Dashboard">
+                        <i class="material-icons">home</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Dashboard">
+                        <i class="material-icons">home</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Customers">
+                        <i class="material-icons">group</i>
+                        <span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Admin/Transactions/Requests">
+                        <i class="material-icons">info</i>
+                        <span>Withdrawal Requests</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons">attach_money</i>
+                        <span>Transaction Activities</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li>
+                            <a href="/Admin/Transactions/debit-transactions">All Debit Transactions</a>
+                        </li>
+                        <li>
+                            <a href="/Admin/Transactions/credit-transactions">All Credit Transactions</a>
+                        </li>
+                    </ul>
+                </li>
+                @if (Request.IsAuthenticated && User.IsInRole("Investment"))
+                {
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">account_balance</i>
+                            <span>Investments</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="/Admin/Investments/invest-cash-view">Invest Available Cash</a>
+                            </li>
+                            <li>
+                                <a href="/Admin/Investments/select-available-cash">Select Available Cash</a>
+                            </li>
+                            <li>
+                                <a href="/Admin/Investments/enter-profit">Enter Profit</a>
+                            </li>
+                            <li>
+                                <a href="/Admin/Investments/previous-profits">Previous Profit Payments</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                }
+                @if (Request.IsAuthenticated && User.IsInRole("Allocation"))
+                {
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">settings</i>
+                            <span>User Settings</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="/Admin/Customers/manage-users">Manage Users</a>
+                            </li>
+                            <li>
+                                <a href="/Admin/Customers/customer-allocations">Customer Allocations</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                <li>
+                    <a href="/">
+                        <i class="material-icons">subdirectory_arrow_left</i>
+                        <span>Back to user view</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- #Menu -->
+        <!-- Footer -->
+        <div class="legal">
+            <div class="copyright">
+                &copy; 2019 <a href="javascript:void(0);">KoboKobo</a>.
+            </div>
+            <div class="version">
+                <b>Version: </b> 1.0.5
+            </div>
+        </div>
+        <!-- #Footer -->
+    </aside>

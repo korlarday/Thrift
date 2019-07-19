@@ -1,0 +1,66 @@
+﻿@model Thrift.Models.ViewModel.Contributions.BeneficiariesVM
+
+@{
+    ViewBag.Title = "Add Beneficiary";
+}
+
+
+<!-- Page Sub Menu
+============================================= -->
+@if (Request.IsAuthenticated)
+{
+    @Html.Action("SubMenuPartial", "Home", new { area = "" })
+}
+<!-- #page-menu end -->
+<!-- Content
+============================================= --> 
+
+<section id="content">
+
+    <div class="content-wrap">
+
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fancy-title title-bottom-border">
+                        <h2>Add Beneficiary</h2>
+                    </div>
+
+                    <div class="process_style col-md-6 offset-md-3">
+                        @using (Html.BeginForm("AddBeneficiary", "Account", FormMethod.Post))
+                        {
+                            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                            @Html.AntiForgeryToken()
+
+                            <div class="col-12 form-group mb-4">
+                                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 form-group mb-4">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-12 form-group mb-4">
+                                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" }) <span class="required-red">*</span>
+                                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="offset-sm-5">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        }
+                    </div>
+                    
+                    <a href="/Account/view-profile" class="btn btn-success">Back to Profile</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- #content end -->
